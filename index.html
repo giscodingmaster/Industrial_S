@@ -22,8 +22,45 @@
     <style>
         body {
             font-family: 'Inter', 'Cairo', 'sans-serif';
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #f1f5f9; /* slate-100 */
         }
+        .btn {
+            @apply font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2;
+        }
+        .btn-primary {
+            @apply bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 focus:ring-indigo-500 disabled:from-slate-400 disabled:to-slate-500 disabled:cursor-not-allowed;
+        }
+        .btn-secondary {
+            @apply bg-gradient-to-r from-slate-500 to-slate-600 text-white hover:from-slate-600 hover:to-slate-700 focus:ring-slate-500;
+        }
+        .btn-export-collected {
+            @apply bg-gradient-to-r from-violet-600 to-purple-600 text-white hover:from-violet-700 hover:to-purple-700 focus:ring-violet-500 disabled:from-slate-400 disabled:to-slate-500;
+        }
+        .btn-export-merged {
+             @apply bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:from-teal-600 hover:to-cyan-600 focus:ring-teal-500 disabled:from-slate-400 disabled:to-slate-500;
+        }
+        .btn-export-geojson {
+            @apply bg-gradient-to-r from-emerald-500 to-green-500 text-white hover:from-emerald-600 hover:to-green-600 focus:ring-emerald-500 disabled:from-slate-400 disabled:to-slate-500;
+        }
+        .btn-danger {
+            @apply bg-gradient-to-r from-rose-500 to-red-600 text-white hover:from-rose-600 hover:to-red-700 focus:ring-rose-500 disabled:from-slate-400 disabled:to-slate-500;
+        }
+        .table-header-cell {
+            @apply px-6 py-3 text-right text-xs font-bold text-slate-600 uppercase tracking-wider;
+        }
+        .table-body-cell {
+            @apply px-6 py-4 whitespace-nowrap;
+        }
+        .tab-button {
+            @apply whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200;
+        }
+        .tab-button-active {
+            @apply border-indigo-500 text-indigo-600;
+        }
+        .tab-button-inactive {
+            @apply border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300;
+        }
+
     </style>
 <script type="importmap">
 {
@@ -79,14 +116,14 @@
         // --- components/Alert.tsx ---
         // =====================================================================================
         const Alert = ({ message, type }) => {
-            const baseClasses = 'p-4 rounded-md shadow-lg flex items-center';
+            const baseClasses = 'p-4 rounded-xl shadow-2xl flex items-center border-l-4 w-full max-w-md';
             const typeClasses = {
-                success: 'bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800',
-                error: 'bg-rose-100 border-l-4 border-rose-500 text-rose-800',
+                success: 'bg-emerald-50 border-emerald-500 text-emerald-900',
+                error: 'bg-rose-50 border-rose-500 text-rose-900',
             };
             const icon = {
-                success: e('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 ml-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, e('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" })),
-                error: e('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 ml-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, e('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" })),
+                success: e('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 ml-3 text-emerald-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, e('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" })),
+                error: e('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 ml-3 text-rose-500", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, e('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" })),
             };
             return e('div', { className: `${baseClasses} ${typeClasses[type]}`, role: "alert" }, icon[type], e('p', { className: "font-semibold" }, message));
         };
@@ -95,12 +132,12 @@
         // --- components/EmptyState.tsx ---
         // =====================================================================================
         const EmptyState = ({ message }) => {
-            return e('div', { className: "text-center py-16 px-6" },
-                e('svg', { className: "mx-auto h-12 w-12 text-gray-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", "aria-hidden": "true" },
-                    e('path', { vectorEffect: "non-scaling-stroke", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" })
+            return e('div', { className: "text-center py-16 px-6 bg-slate-50 rounded-lg" },
+                e('svg', { className: "mx-auto h-16 w-16 text-slate-400", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", "aria-hidden": "true" },
+                    e('path', { vectorEffect: "non-scaling-stroke", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.5, d: "M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" })
                 ),
-                e('h3', { className: "mt-2 text-sm font-medium text-gray-900" }, "لا توجد بيانات"),
-                e('p', { className: "mt-1 text-sm text-gray-500" }, message)
+                e('h3', { className: "mt-4 text-lg font-medium text-slate-800" }, "لا توجد بيانات"),
+                e('p', { className: "mt-2 text-sm text-slate-500" }, message)
             );
         };
 
@@ -108,12 +145,12 @@
         // --- components/Header.tsx ---
         // =====================================================================================
         const Header = ({ title, recordCount }) => {
-            return e('header', { className: "bg-white shadow-sm sticky top-0 z-40 border-b border-slate-200" },
-                e('div', { className: "container mx-auto px-4 md:px-6 py-3 flex justify-between items-center" },
+            return e('header', { className: "bg-gradient-to-r from-slate-800 to-slate-900 shadow-lg sticky top-0 z-40 text-white" },
+                e('div', { className: "container mx-auto px-4 md:px-6 py-4 flex justify-between items-center" },
                     e('div', { className: "flex items-center gap-4" },
-                        e('h1', { className: "text-2xl font-bold text-slate-800" }, title)
+                        e('h1', { className: "text-2xl font-bold tracking-wider" }, title)
                     ),
-                    e('div', { className: "bg-indigo-100 text-indigo-800 text-sm font-semibold px-4 py-2 rounded-full" }, `📊 عدد السجلات المجمعة: ${recordCount}`)
+                    e('div', { className: "bg-white/10 text-white text-sm font-semibold px-5 py-2 rounded-full backdrop-blur-sm border border-white/20" }, `📊 التقدم: ${recordCount}`)
                 )
             );
         };
@@ -133,6 +170,8 @@
             const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
             const [passwordInput, setPasswordInput] = useState('');
             const [isFirebaseReady, setIsFirebaseReady] = useState(false);
+            const [uploadMode, setUploadMode] = useState('replace'); // 'replace' or 'append'
+            const [activeTab, setActiveTab] = useState('collected');
 
             useEffect(() => {
                 if (window.firebase && window.firebase.database) {
@@ -159,7 +198,7 @@
 
             const showAlert = (message, type) => {
                 setAlert({ message, type });
-                setTimeout(() => setAlert(null), 5000); // Increased timeout for longer error messages
+                setTimeout(() => setAlert(null), 5000); 
             };
 
             const handlePasswordSubmit = (ev) => {
@@ -191,7 +230,6 @@
                             return;
                         }
 
-                        // --- NEW: Validation logic updated to make 'ID' optional ---
                         const requiredCols = ['Company Name', 'Governate', 'Location Name', 'Location Type'];
                         const fileHeaders = Object.keys(json[0]).map(h => h.trim());
                         
@@ -203,24 +241,56 @@
                         
                         const hasIdColumn = fileHeaders.includes('ID');
                         
-                        // Normalize data keys and add a generated ID if the 'ID' column is missing
                         const normalizedData = json.map((row, index) => {
                             const newRow = {};
                             for (const key in row) {
                                 newRow[key.trim()] = row[key];
                             }
-                            // If the original file does not have an ID column, we generate one.
                             if (!hasIdColumn) {
                                 newRow['ID'] = `generated_${index}`;
                             }
                             return newRow;
                         });
 
-                        if (isFirebaseReady) {
-                            const db = window.firebase.database();
+                        if (!isFirebaseReady) {
+                            showAlert('خدمة قاعدة البيانات غير مهيأة.', 'error');
+                            return;
+                        }
+                        const db = window.firebase.database();
+
+                        if (uploadMode === 'append') {
+                            if (referenceData.length === 0) {
+                                showAlert('لا توجد بيانات حالية للإضافة إليها. استخدم وضع "استبدال" أولاً.', 'error');
+                                return;
+                            }
+                            
+                            const existingIds = new Set(referenceData.map(row => row.ID));
+                            const newIds = normalizedData.map(row => row.ID);
+                            const duplicateIds = newIds.filter(id => existingIds.has(id));
+
+                            if (duplicateIds.length > 0) {
+                                showAlert(`خطأ: تم العثور على IDs مكررة: [${duplicateIds.join(', ')}]. لا يمكن الإضافة.`, 'error');
+                                return;
+                            }
+                            
+                            const combinedData = [...referenceData, ...normalizedData];
+                            const payload = {
+                                fileName: `ملف مدمج (آخر إضافة: ${file.name})`,
+                                data: combinedData,
+                                uploadedAt: new Date().toISOString()
+                            };
+                            db.ref('masterReference').set(payload)
+                                .then(() => {
+                                    showAlert('تمت إضافة البيانات الجديدة بنجاح.', 'success');
+                                })
+                                .catch((error) => {
+                                    showAlert(`فشل إضافة البيانات: ${error.message}`, 'error');
+                                });
+
+                        } else { // 'replace' mode
                             const payload = {
                                 fileName: file.name,
-                                data: normalizedData, // Use normalized data with potentially generated IDs
+                                data: normalizedData,
                                 uploadedAt: new Date().toISOString()
                             };
                             db.ref('masterReference').set(payload)
@@ -230,8 +300,6 @@
                                 .catch((error) => {
                                     showAlert(`فشل رفع الملف المرجعي: ${error.message}`, 'error');
                                 });
-                        } else {
-                            showAlert('خدمة قاعدة البيانات غير مهيأة.', 'error');
                         }
 
                     } catch (error) {
@@ -357,20 +425,66 @@
                 XLSX.writeFile(wb, `collected_locations_${new Date().toISOString().split('T')[0]}.xlsx`);
                 showAlert('تم تصدير السجلات المجمعة بنجاح', 'success');
             };
+            
+            const exportToGeoJSON = () => {
+                if (collectedLocations.length === 0) {
+                    showAlert('لا توجد سجلات مجمعة لتصديرها.', 'error');
+                    return;
+                }
+
+                const geojson = {
+                    type: "FeatureCollection",
+                    features: collectedLocations.map(record => ({
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: [parseFloat(record.longitude), parseFloat(record.latitude)]
+                        },
+                        properties: {
+                            masterId: record.masterId,
+                            companyName: record.companyName,
+                            governate: record.governate,
+                            locationName: record.locationName,
+                            locationType: record.locationType,
+                            timestamp: record.timestamp,
+                            updated: record.updated || null
+                        }
+                    }))
+                };
+
+                const dataStr = JSON.stringify(geojson, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = `collected_locations_${new Date().toISOString().split('T')[0]}.geojson`;
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showAlert('تم تصدير ملف GeoJSON بنجاح!', 'success');
+            };
 
             const governorates = useMemo(() => [...new Set(referenceData.map(item => item['Governate']))].filter(Boolean), [referenceData]);
             
             const collectedMasterIds = useMemo(() => new Set(collectedLocations.map(loc => loc.masterId)), [collectedLocations]);
 
-            const locationsInGovernorate = useMemo(() => {
+            const locationsForDropdown = useMemo(() => {
                 if (!selectedGovernorate) return [];
                 return referenceData
                     .map((item, index) => ({ item, index }))
-                    .filter(({ item }) => 
-                        item['Governate'] === selectedGovernorate &&
-                        !collectedMasterIds.has(item['ID'])
-                    );
-            }, [referenceData, selectedGovernorate, collectedMasterIds]);
+                    .filter(({ item }) => item['Governate'] === selectedGovernorate);
+            }, [referenceData, selectedGovernorate]);
+            
+            const pendingLocations = useMemo(() => {
+                if (!referenceData || referenceData.length === 0) return [];
+                return referenceData.filter(item => !collectedMasterIds.has(item.ID));
+            }, [referenceData, collectedMasterIds]);
+
+            const currentlyEditingMasterId = useMemo(() => {
+                if (!editingId) return null;
+                const record = collectedLocations.find(l => l.id === editingId);
+                return record ? record.masterId : null;
+            }, [editingId, collectedLocations]);
 
             const handleGovernorateChange = (ev) => {
                 setSelectedGovernorate(ev.target.value);
@@ -396,15 +510,15 @@
                 setCoordinates(coords);
             };
 
-            const passwordModal = isPasswordModalOpen && e('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" },
-                e('div', { className: "bg-white p-8 rounded-lg shadow-xl w-full max-w-sm" },
-                    e('h3', { className: "text-lg font-bold mb-4 text-slate-800" }, "دخول المسؤول"),
-                    e('p', { className: "text-sm text-slate-600 mb-4" }, "الرجاء إدخال كلمة المرور للمتابعة."),
+            const passwordModal = isPasswordModalOpen && e('div', { className: "fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50" },
+                e('div', { className: "bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm transform transition-all" },
+                    e('h3', { className: "text-xl font-bold mb-4 text-slate-800" }, "دخول المسؤول"),
+                    e('p', { className: "text-sm text-slate-600 mb-6" }, "الرجاء إدخال كلمة المرور للمتابعة."),
                     e('form', { onSubmit: handlePasswordSubmit },
-                        e('input', { type: "password", value: passwordInput, onChange: (ev) => setPasswordInput(ev.target.value), className: "w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white", autoFocus: true }),
-                        e('div', { className: "mt-6 flex justify-end gap-3" },
-                            e('button', { type: "button", onClick: () => { setIsPasswordModalOpen(false); setPasswordInput(''); }, className: "px-4 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 transition-colors" }, "إلغاء"),
-                            e('button', { type: "submit", className: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" }, "دخول")
+                        e('input', { type: "password", value: passwordInput, onChange: (ev) => setPasswordInput(ev.target.value), className: "w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white", autoFocus: true }),
+                        e('div', { className: "mt-8 flex justify-end gap-3" },
+                            e('button', { type: "button", onClick: () => { setIsPasswordModalOpen(false); setPasswordInput(''); }, className: "btn bg-slate-200 text-slate-800 hover:bg-slate-300 focus:ring-slate-400" }, "إلغاء"),
+                            e('button', { type: "submit", className: "btn btn-primary" }, "دخول")
                         )
                     )
                 )
@@ -416,75 +530,126 @@
             }, [selectedLocationMasterIndex, referenceData]);
 
             // --- Updated dropdown styles ---
-            const dropdownClasses = "w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 text-slate-900 hover:border-slate-400 transition-colors disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed";
+            const formInputClasses = "w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 text-slate-900 hover:border-slate-400 transition-colors disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed";
 
             const formElement = e('form', { onSubmit: handleSubmit },
-                e('label', { className: "block text-sm font-medium text-slate-700 mb-2" }, "الخطوة 2: إدخال البيانات الجديدة"),
+                e('label', { className: "block text-sm font-semibold text-slate-700 mb-2" }, "الخطوة 2: إدخال البيانات الجديدة"),
                 e('div', { className: "space-y-4" },
-                    e('div', null, e('label', { htmlFor: "governorate", className: "block text-sm font-medium text-slate-700 mb-1" }, "المحافظة *"), e('select', { id: "governorate", value: selectedGovernorate, onChange: handleGovernorateChange, className: dropdownClasses, required: true }, e('option', { value: "" }, "اختر محافظة..."), governorates.map(g => e('option', { key: g, value: g }, g)))),
-                    e('div', null, e('label', { htmlFor: "locationName", className: "block text-sm font-medium text-slate-700 mb-1" }, "اسم الموقع *"), e('select', { id: "locationName", value: selectedLocationMasterIndex, onChange: handleLocationChange, className: dropdownClasses, disabled: !selectedGovernorate, required: true }, e('option', { value: "" }, "اختر موقع..."), locationsInGovernorate.map(({ item, index }) => e('option', { key: item.ID, value: index }, item['Location Name'])))),
-                    selectedMasterRecord && e('div', { className: "p-3 bg-slate-50 border rounded-md text-sm space-y-1" },
-                        e('p', null, e('span', {className: "font-semibold"}, "اسم الشركة: "), selectedMasterRecord['Company Name']),
-                        e('p', null, e('span', {className: "font-semibold"}, "نوع الموقع: "), selectedMasterRecord['Location Type'])
+                    e('div', null, e('label', { htmlFor: "governorate", className: "block text-sm font-medium text-slate-700 mb-1" }, "المحافظة *"), e('select', { id: "governorate", value: selectedGovernorate, onChange: handleGovernorateChange, className: formInputClasses, required: true }, e('option', { value: "" }, "اختر محافظة..."), governorates.map(g => e('option', { key: g, value: g }, g)))),
+                    e('div', null, e('label', { htmlFor: "locationName", className: "block text-sm font-medium text-slate-700 mb-1" }, "اسم الموقع *"), 
+                        e('select', { id: "locationName", value: selectedLocationMasterIndex, onChange: handleLocationChange, className: formInputClasses, disabled: !selectedGovernorate, required: true }, 
+                            e('option', { value: "" }, "اختر موقع..."), 
+                            locationsForDropdown.map(({ item, index }) => {
+                                const isCollected = collectedMasterIds.has(item.ID);
+                                const isCurrentlyEditing = item.ID === currentlyEditingMasterId;
+                                return e('option', { 
+                                    key: item.ID, 
+                                    value: index,
+                                    disabled: isCollected && !isCurrentlyEditing,
+                                    className: isCollected && !isCurrentlyEditing ? 'text-gray-400' : ''
+                                }, `${isCollected && !isCurrentlyEditing ? '✅ ' : ''}${item['Location Name']}`);
+                            })
+                        )
                     ),
-                    e('div', null, e('label', { htmlFor: "googleLink", className: "block text-sm font-medium text-slate-700 mb-1" }, "رابط Google Maps *"), e('textarea', { id: "googleLink", value: googleLink, onChange: handleLinkChange, onPaste: handleLinkPaste, rows: 3, className: "w-full p-2 border border-slate-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white", placeholder: "الصق الرابط هنا لاستخراج الإحداثيات...", required: true })),
-                    coordinates && e('div', { className: "p-3 bg-indigo-50 border-l-4 border-indigo-400 text-indigo-800 rounded-md" }, e('p', { className: "font-semibold" }, "✓ تم استخراج الإحداثيات:"), e('p', { className: "font-mono text-sm" }, `Lat = ${coordinates.lat.toFixed(7)}`), e('p', { className: "font-mono text-sm" }, `Lon = ${coordinates.lon.toFixed(7)}`))
+                    selectedMasterRecord && e('div', { className: "p-4 bg-slate-50 border-l-4 border-slate-300 rounded-md text-sm space-y-1" },
+                        e('p', null, e('span', {className: "font-semibold text-slate-600"}, "اسم الشركة: "), e('span', {className: "text-slate-800"}, selectedMasterRecord['Company Name'])),
+                        e('p', null, e('span', {className: "font-semibold text-slate-600"}, "نوع الموقع: "), e('span', {className: "text-slate-800"}, selectedMasterRecord['Location Type']))
+                    ),
+                    e('div', null, e('label', { htmlFor: "googleLink", className: "block text-sm font-medium text-slate-700 mb-1" }, "رابط Google Maps *"), e('textarea', { id: "googleLink", value: googleLink, onChange: handleLinkChange, onPaste: handleLinkPaste, rows: 3, className: `${formInputClasses} bg-white`, placeholder: "الصق الرابط هنا لاستخراج الإحداثيات...", required: true })),
+                    coordinates && e('div', { className: "p-4 bg-indigo-50 border-l-4 border-indigo-400 text-indigo-900 rounded-lg shadow-sm" }, e('p', { className: "font-semibold" }, "✓ تم استخراج الإحداثيات بنجاح:"), e('p', { className: "font-mono text-sm mt-1" }, `Lat = ${coordinates.lat.toFixed(7)}`), e('p', { className: "font-mono text-sm" }, `Lon = ${coordinates.lon.toFixed(7)}`))
                 ),
-                e('div', { className: "mt-6 space-y-2" },
-                    e('button', { type: "submit", disabled: !selectedLocationMasterIndex, className: "w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 disabled:bg-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" }, editingId ? '💾 تحديث السجل' : '✅ إضافة للقائمة'),
-                    editingId && e('button', { type: "button", onClick: resetForm, className: "w-full bg-slate-500 text-white font-bold py-2 px-4 rounded-md hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500" }, "إلغاء التعديل")
+                e('div', { className: "mt-6 space-y-3" },
+                    e('button', { type: "submit", disabled: !selectedLocationMasterIndex, className: "w-full btn btn-primary" }, editingId ? '💾 تحديث السجل' : '✅ إضافة للقائمة'),
+                    editingId && e('button', { type: "button", onClick: resetForm, className: "w-full btn btn-secondary" }, "إلغاء التعديل")
                 )
             );
             
             return e(React.Fragment, null,
                 alert && e('div', { className: "fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4" }, e(Alert, { message: alert.message, type: alert.type })),
                 passwordModal,
-                e(Header, { title: " جامع الإحداثيات", recordCount: collectedLocations.length }),
+                e(Header, { title: " جامع الإحداثيات", recordCount: `${collectedLocations.length} / ${referenceData.length}` }),
                 e('main', { className: "container mx-auto p-4 md:p-6" },
-                    e('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
-                        e('div', { id: "data-entry-form", className: "lg:col-span-1 bg-white p-6 rounded-lg shadow-md h-fit sticky top-24" },
-                            e('div', { className: "flex justify-between items-center border-b pb-2 mb-4" },
-                                e('h2', { className: "text-xl font-semibold text-slate-700" }, "لوحة التحكم"),
-                                isAdmin ? e('div', { className: "flex items-center gap-3" }, e('span', { className: "text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full" }, "وضع المسؤول"), e('button', { onClick: onAdminLogout, className: "text-sm text-rose-600 hover:underline" }, "خروج")) : e('button', { onClick: () => setIsPasswordModalOpen(true), className: "text-sm text-indigo-600 hover:underline" }, "دخول المسؤول")
+                    e('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-8" },
+                        e('div', { id: "data-entry-form", className: "lg:col-span-1 bg-white p-6 rounded-xl shadow-lg h-fit sticky top-24" },
+                            e('div', { className: "flex justify-between items-center border-b border-slate-200 pb-4 mb-6" },
+                                e('h2', { className: "text-xl font-bold text-slate-800" }, "لوحة التحكم"),
+                                isAdmin ? e('div', { className: "flex items-center gap-3" }, e('span', { className: "text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full" }, "وضع المسؤول"), e('button', { onClick: onAdminLogout, className: "text-sm text-rose-600 hover:underline font-semibold" }, "خروج")) : e('button', { onClick: () => setIsPasswordModalOpen(true), className: "text-sm text-indigo-600 hover:underline font-semibold" }, "دخول المسؤول")
                             ),
                             isAdmin && e('div', { className: "mb-6" },
-                                e('label', { className: "block text-sm font-medium text-slate-700 mb-2" }, "الخطوة 1: رفع الملف المرجعي"),
-                                e('div', { className: "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-md" }, e('div', { className: "space-y-1 text-center" }, e('svg', { className: "mx-auto h-12 w-12 text-slate-400", stroke: "currentColor", fill: "none", viewBox: "0 0 48 48", "aria-hidden": "true" }, e('path', { d: "M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })), e('div', { className: "flex text-sm text-slate-600" }, e('label', { htmlFor: "file-upload", className: "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500" }, e('span', null, fileName ? 'تغيير الملف' : 'اختر ملف إكسل'), e('input', { id: "file-upload", name: "file-upload", type: "file", className: "sr-only", accept: ".xlsx, .xls", onChange: handleFileChange }))), e('p', { className: "text-xs text-slate-500" }, ".xlsx, .xls"))),
-                                fileName && e('p', { className: "text-sm text-emerald-600 mt-2" }, `✓ الملف الحالي: ${fileName}`)
+                                e('label', { className: "block text-sm font-semibold text-slate-700 mb-2" }, "الخطوة 1: رفع الملف المرجعي"),
+                                e('div', { className: "flex items-center space-x-6 rtl:space-x-reverse mb-4" },
+                                    e('div', { className: "flex items-center" },
+                                        e('input', { id: "mode-replace", name: "upload-mode", type: "radio", checked: uploadMode === 'replace', onChange: () => setUploadMode('replace'), className: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" }),
+                                        e('label', { htmlFor: "mode-replace", className: "mr-2 block text-sm font-medium text-gray-700" }, "استبدال البيانات")
+                                    ),
+                                    e('div', { className: "flex items-center" },
+                                        e('input', { id: "mode-append", name: "upload-mode", type: "radio", checked: uploadMode === 'append', onChange: () => setUploadMode('append'), className: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" }),
+                                        e('label', { htmlFor: "mode-append", className: "mr-2 block text-sm font-medium text-gray-700" }, "إضافة للبيانات")
+                                    )
+                                ),
+                                e('div', { className: "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg" }, e('div', { className: "space-y-1 text-center" }, e('svg', { className: "mx-auto h-12 w-12 text-slate-400", stroke: "currentColor", fill: "none", viewBox: "0 0 48 48", "aria-hidden": "true" }, e('path', { d: "M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })), e('div', { className: "flex text-sm text-slate-600 justify-center" }, e('label', { htmlFor: "file-upload", className: "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1" }, e('span', null, fileName ? 'تغيير الملف' : 'اختر ملف إكسل'), e('input', { id: "file-upload", name: "file-upload", type: "file", className: "sr-only", accept: ".xlsx, .xls", onChange: handleFileChange }))), e('p', { className: "text-xs text-slate-500" }, "XLSX, XLS up to 10MB"))),
+                                fileName && e('p', { className: "text-sm text-emerald-700 font-semibold mt-3 text-center" }, `✓ الملف الحالي: ${fileName}`)
                             ),
-                            !isAdmin && referenceData.length === 0 && e('div', { className: "p-4 text-center bg-slate-100 rounded-md" }, e('p', { className: "text-slate-600" }, "يتم الآن تحميل البيانات المرجعية... إذا استمر التحميل، يرجى مطالبة المسؤول برفع الملف.")),
+                            !isAdmin && referenceData.length === 0 && e('div', { className: "p-4 text-center bg-slate-100 rounded-lg" }, e('p', { className: "text-slate-600" }, "يتم الآن تحميل البيانات المرجعية... إذا استمر التحميل، يرجى مطالبة المسؤول برفع الملف.")),
                             referenceData.length > 0 && formElement
                         ),
-                        e('div', { className: "lg:col-span-2 bg-white p-6 rounded-lg shadow-md" },
+                        e('div', { className: "lg:col-span-2 bg-white p-6 rounded-xl shadow-lg" },
                             e('div', { className: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4" },
-                                e('div', null, e('h2', { className: "text-xl font-semibold text-slate-700" }, "السجلات المضافة (مشتركة)"), e('p', { className: "text-sm text-slate-500 mt-1" }, "هذه السجلات مرئية لجميع المستخدمين في الوقت الفعلي.")),
-                                e('div', { className: "flex flex-col sm:flex-row gap-2 justify-end w-full sm:w-auto" },
-                                    e('div', null, e('button', { onClick: exportCollectedToExcel, disabled: collectedLocations.length === 0, className: "w-full sm:w-auto bg-violet-600 text-white font-bold py-2 px-4 rounded-md hover:bg-violet-700 disabled:bg-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500" }, "تصدير المجمع")),
-                                    e('div', null, e('button', { onClick: exportMergedToExcel, disabled: collectedLocations.length === 0 || referenceData.length === 0, className: "w-full sm:w-auto bg-teal-600 text-white font-bold py-2 px-4 rounded-md hover:bg-teal-700 disabled:bg-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500" }, "تصدير المدمج")),
-                                    isAdmin && e('div', null, e('button', { onClick: handleClearAll, disabled: collectedLocations.length === 0, className: "w-full sm:w-auto bg-rose-600 text-white font-bold py-2 px-4 rounded-md hover:bg-rose-700 disabled:bg-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500" }, "حذف الكل"))
+                                e('div', null, e('h2', { className: "text-xl font-bold text-slate-800" }, "عرض البيانات"), e('p', { className: "text-sm text-slate-500 mt-1" }, "هذه السجلات مرئية لجميع المستخدمين في الوقت الفعلي.")),
+                                e('div', { className: "grid grid-cols-2 sm:flex sm:flex-row gap-2 justify-end w-full sm:w-auto" },
+                                    e('button', { onClick: exportCollectedToExcel, disabled: collectedLocations.length === 0, className: "btn btn-export-collected" }, "تصدير المجمع"),
+                                    e('button', { onClick: exportMergedToExcel, disabled: collectedLocations.length === 0 || referenceData.length === 0, className: "btn btn-export-merged" }, "تصدير المدمج"),
+                                    isAdmin && e('button', { onClick: exportToGeoJSON, disabled: collectedLocations.length === 0, className: "btn btn-export-geojson" }, "تصدير GeoJSON"),
+                                    isAdmin && e('button', { onClick: handleClearAll, disabled: collectedLocations.length === 0, className: "btn btn-danger col-span-2" }, "حذف الكل")
                                 )
                             ),
-                            e('div', { className: "overflow-x-auto" }, collectedLocations.length > 0 ? e('table', { className: "min-w-full divide-y divide-slate-200" },
-                                e('thead', { className: "bg-slate-50" }, e('tr', null,
-                                    e('th', { scope: "col", className: "px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider" }, "اسم الموقع"),
-                                    e('th', { scope: "col", className: "px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider" }, "المحافظة"),
-                                    e('th', { scope: "col", className: "px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider" }, "الإحداثيات"),
-                                    e('th', { scope: "col", className: "px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider" }, "وقت الإضافة"),
-                                    e('th', { scope: "col", className: "relative px-6 py-3" }, e('span', { className: "sr-only" }, "Edit"))
-                                )),
-                                e('tbody', { className: "bg-white divide-y divide-slate-200" },
-                                    collectedLocations.map(record => e('tr', { key: record.id },
-                                        e('td', { className: "px-6 py-4 whitespace-nowrap" }, e('div', { className: "text-sm text-slate-900 font-medium" }, record.locationName)),
-                                        e('td', { className: "px-6 py-4 whitespace-nowrap" }, e('div', { className: "text-sm text-slate-500" }, record.governate)),
-                                        e('td', { className: "px-6 py-4 whitespace-nowrap text-sm text-slate-500" }, e('div', { className: "font-mono" }, `Lat: ${record.latitude}`), e('div', { className: "font-mono" }, `Lon: ${record.longitude}`)),
-                                        e('td', { className: "px-6 py-4 whitespace-nowrap text-sm text-slate-500" }, record.timestamp),
-                                        e('td', { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex gap-4 justify-end" },
-                                            e('button', { onClick: () => handleEdit(record), className: "text-indigo-600 hover:text-indigo-900" }, "تعديل"),
-                                            e('button', { onClick: () => handleDelete(record.id), className: "text-rose-600 hover:text-rose-900" }, "حذف")
-                                        )
-                                    ))
+                            e('div', { className: "border-b border-gray-200 mb-4" },
+                                e('nav', { className: "-mb-px flex space-x-8 rtl:space-x-reverse", "aria-label": "Tabs" },
+                                    e('button', { onClick: () => setActiveTab('collected'), className: `tab-button ${activeTab === 'collected' ? 'tab-button-active' : 'tab-button-inactive'}` }, `السجلات المضافة (${collectedLocations.length})`),
+                                    e('button', { onClick: () => setActiveTab('pending'), className: `tab-button ${activeTab === 'pending' ? 'tab-button-active' : 'tab-button-inactive'}` }, `السجلات المتبقية (${pendingLocations.length})`)
                                 )
-                            ) : e(EmptyState, { message: "لم تتم إضافة أي سجلات بعد. ابدأ بإضافة سجل من اللوحة." }))
+                            ),
+                            activeTab === 'collected' ?
+                                e('div', { className: "overflow-x-auto" }, collectedLocations.length > 0 ? e('table', { className: "min-w-full divide-y divide-slate-200" },
+                                    e('thead', { className: "bg-slate-100" }, e('tr', null,
+                                        e('th', { scope: "col", className: "table-header-cell" }, "اسم الموقع"),
+                                        e('th', { scope: "col", className: "table-header-cell" }, "المحافظة"),
+                                        e('th', { scope: "col", className: "table-header-cell" }, "الإحداثيات"),
+                                        e('th', { scope: "col", className: "table-header-cell" }, "وقت الإضافة"),
+                                        e('th', { scope: "col", className: "relative px-6 py-3" }, e('span', { className: "sr-only" }, "Edit"))
+                                    )),
+                                    e('tbody', { className: "bg-white divide-y divide-slate-100" },
+                                        collectedLocations.map((record, index) => e('tr', { key: record.id, className: index % 2 === 0 ? 'bg-white' : 'bg-slate-50 hover:bg-slate-100' },
+                                            e('td', { className: "table-body-cell" }, e('div', { className: "text-sm text-slate-900 font-medium" }, record.locationName)),
+                                            e('td', { className: "table-body-cell" }, e('div', { className: "text-sm text-slate-500" }, record.governate)),
+                                            e('td', { className: "table-body-cell text-sm text-slate-500" }, e('div', { className: "font-mono" }, `Lat: ${record.latitude}`), e('div', { className: "font-mono" }, `Lon: ${record.longitude}`)),
+                                            e('td', { className: "table-body-cell text-sm text-slate-500" }, record.timestamp),
+                                            e('td', { className: "table-body-cell text-right text-sm font-medium flex gap-4 justify-end" },
+                                                e('button', { onClick: () => handleEdit(record), className: "text-indigo-600 hover:text-indigo-900 font-semibold" }, "تعديل"),
+                                                e('button', { onClick: () => handleDelete(record.id), className: "text-rose-600 hover:text-rose-900 font-semibold" }, "حذف")
+                                            )
+                                        ))
+                                    )
+                                ) : e(EmptyState, { message: "لم تتم إضافة أي سجلات بعد. ابدأ بإضافة سجل من اللوحة." }))
+                            :
+                                e('div', { className: "overflow-x-auto" }, pendingLocations.length > 0 ? 
+                                    e('table', { className: "min-w-full divide-y divide-slate-200" },
+                                        e('thead', { className: "bg-slate-100" }, e('tr', null,
+                                            e('th', { scope: "col", className: "table-header-cell" }, "اسم الشركة"),
+                                            e('th', { scope: "col", className: "table-header-cell" }, "اسم الموقع"),
+                                            e('th', { scope: "col", className: "table-header-cell" }, "المحافظة"),
+                                            e('th', { scope: "col", className: "table-header-cell" }, "نوع الموقع")
+                                        )),
+                                        e('tbody', { className: "bg-white divide-y divide-slate-100" },
+                                            pendingLocations.map((record, index) => e('tr', { key: record.ID, className: index % 2 === 0 ? 'bg-white' : 'bg-slate-50 hover:bg-slate-100' },
+                                                e('td', { className: "table-body-cell text-sm text-slate-500" }, record['Company Name']),
+                                                e('td', { className: "table-body-cell text-sm text-slate-900 font-medium" }, record['Location Name']),
+                                                e('td', { className: "table-body-cell text-sm text-slate-500" }, record['Governate']),
+                                                e('td', { className: "table-body-cell text-sm text-slate-500" }, record['Location Type'])
+                                            ))
+                                        )
+                                    ) : e(EmptyState, { message: "تهانينا! تم تجميع كل المواقع." })
+                                )
                         )
                     )
                 )
@@ -524,9 +689,16 @@
             const handleAdminLogout = () => setIsAdmin(false);
 
             if (isLoading) {
-                return e('div', { className: "flex items-center justify-center min-h-screen" }, 
+                return e('div', { className: "flex items-center justify-center min-h-screen bg-slate-100" }, 
                     e('div', { className: "text-center" }, 
-                        e('p', { className: "text-lg text-slate-600" }, "جاري تحميل البيانات...")
+                        e('div', { role: 'status' },
+                            e('svg', { 'aria-hidden': 'true', className: 'inline w-10 h-10 text-slate-300 animate-spin fill-indigo-600', viewBox: '0 0 100 101', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' },
+                                e('path', { d: 'M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z', fill: 'currentColor' }),
+                                e('path', { d: 'M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z', fill: 'currentFill' })
+                            ),
+                            e('span', { className: 'sr-only' }, 'Loading...'),
+                        ),
+                        e('p', { className: "text-lg text-slate-600 mt-4" }, "جاري تحميل البيانات...")
                     )
                 );
             }
